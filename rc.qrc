@@ -1,0 +1,10 @@
+ <RCC>
+     <qresource prefix="/" >
+         <file>popup.js</file>
+         <file>user.css</file>
+         <file>bookmark.html</file>
+     </qresource>
+     <qresource prefix="/img" >
+         <file>icon.png</file>
+     </qresource>
+ </RCC>
