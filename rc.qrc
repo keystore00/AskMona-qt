@@ -3,6 +3,9 @@
          <file>popup.js</file>
          <file>user.css</file>
          <file>bookmark.html</file>
+         <file>topiclist.html</file>
+         <file>topiclist_item.html</file>
+         <file>topiclist.css</file>
      </qresource>
      <qresource prefix="/img" >
          <file>icon.png</file>

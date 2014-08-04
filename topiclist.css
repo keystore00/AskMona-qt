@@ -1,0 +1,14 @@
+* {
+    background-color:white;
+    font-family:sans-serif;
+    font-size:12px;
+}
+a:link {color:black; text-decoration:none;}
+a:hover {color:blue; text-decoration:underline}
+a.del:link {color:red; text-decoration:none;}
+a.del:hover {color:red; text-decoration:underline}
+.res.updated {color:blue;}
+.mona.updated {color:green;}
+table a{display:block}
+table .res {text-align:right}
+table .mona {text-align:right}

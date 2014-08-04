@@ -13,6 +13,7 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSpinBox>
+#include <QApplication>
 #include <queue>
 #include <ctime>
 #include "constants.h"
@@ -21,7 +22,7 @@
 namespace {
   enum sort_key {k_modified,k_res,k_MONA};
   time_t last_reload;
-  std::map<QString,enum sort_key> sort_key_map = {{"modified",k_modified},{"res",k_res},{"MONA",k_MONA}};
+  std::map<QString,enum sort_key> sort_key_map = {{"Default",k_modified},{"Res.",k_res},{"MONA",k_MONA}};
   QString fname = "/dat/topic_list.json";
 }
 TopicList::TopicList(QWidget *parent) :
@@ -71,14 +72,14 @@ void TopicList::saveTopics(const QString& filename)
 void TopicList::setWidgets()
 {
   auto layout = new QVBoxLayout();
-  auto pb = new QPushButton("Check Updates",this);
+  auto hlayout = new QHBoxLayout();
+  auto pb = new QPushButton(QApplication::style()->standardIcon(QStyle::SP_BrowserReload),"",this);
   pb->setToolTip("Update topic information for last 25 topics.");
   connect(pb,SIGNAL(clicked()),this,SLOT(update()));
-  layout->addWidget(pb);
-  auto hlayout = new QHBoxLayout();
+  hlayout->addWidget(pb);
   cbox = new QComboBox(this);
-  cbox->addItem("modified");
-  cbox->addItem("res");
+  cbox->addItem("Default");
+  cbox->addItem("Res.");
   cbox->addItem("MONA");
   connect(cbox,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxChanged(int)));
   hlayout->addWidget(cbox);
@@ -93,9 +94,8 @@ void TopicList::setWidgets()
   layout->addLayout(hlayout);
   text_area = new TopicView(this);
   text_area->setContextMenuPolicy(Qt::CustomContextMenu);
-  text_area->setAlignment(Qt::AlignTop);
-  text_area->setOpenLinks(false);
-  connect(text_area,SIGNAL(anchorClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
+  text_area->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+  connect(text_area,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
   layout->addWidget(text_area);
   setLayout(layout);
 }
@@ -196,12 +196,12 @@ void TopicList::handleMouseGesture(const QString& g)
     return;
   }
   if (g == "LD") {
-    auto sb = text_area->verticalScrollBar();
-    sb->setValue(sb->maximum());
+    int pos = 100;
+    text_area->page()->mainFrame()->setScrollBarValue(Qt::Vertical, text_area->page()->mainFrame()->contentsSize().height()*pos/100);
     return;
   } else if (g == "LU") {
-    auto sb = text_area->verticalScrollBar();
-    sb->setValue(sb->minimum());
+    int pos=0;
+    text_area->page()->mainFrame()->setScrollBarValue(Qt::Vertical, text_area->page()->mainFrame()->contentsSize().height()*pos/100);
     return;
   } else if (g == "UD") {
     update();

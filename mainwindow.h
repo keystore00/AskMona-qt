@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
 
 public:
   MainWindow();
+  ~MainWindow();
 		       
 protected slots:
 
@@ -35,6 +36,8 @@ protected:
   void mousePressEvent(QMouseEvent* e);
   void mouseMoveEvent(QMouseEvent* e);
   void mouseReleaseEvent(QMouseEvent* e);
+  void readSettings();
+  void saveSettings();
 
 private:
   QString popupjs,bookmark;
