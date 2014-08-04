@@ -13,6 +13,7 @@ protected:
   void mouseMoveEvent(QMouseEvent* e);
   void mouseReleaseEvent(QMouseEvent* e);
 signals:
+  void addNG(const QString& t_id);
 
 public slots:
   void scrollToTop();

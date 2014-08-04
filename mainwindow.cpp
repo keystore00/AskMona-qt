@@ -75,12 +75,18 @@ void MainWindow::readSettings()
   QSettings settings(QCoreApplication::applicationDirPath()+"/settings.ini",QSettings::IniFormat,this);
   restoreGeometry(settings.value("geometry").toByteArray());
   restoreState(settings.value("windowState").toByteArray());
+  QDataStream ds(settings.value("ng_topics").toByteArray());
+  ds >> ng_topics;
 }
 void MainWindow::saveSettings()
 {
   QSettings settings(QCoreApplication::applicationDirPath()+"/settings.ini",QSettings::IniFormat,this);
   settings.setValue("geometry", saveGeometry());
   settings.setValue("windowState", saveState());
+  QByteArray ba;
+  QDataStream ds(&ba,QIODevice::WriteOnly);
+  ds << ng_topics;
+  settings.setValue("ng_topics",ba);
 }
 
 void MainWindow::adjustLocation()
@@ -123,9 +129,24 @@ void MainWindow::finishLoading(bool)
     process_res();
     insert_bookmark(t_id);
     topic_list->addTopic(t_id);
+    return;
+  }
+  if (view->url().toString()=="http://askmona.org/") {
+    process_toppage();
   }
 }
-
+void MainWindow::process_toppage()
+{
+  QWebElement document = view->page()->mainFrame()->documentElement();
+  auto topics = document.findAll("li.tbox");
+  for (auto t : topics) {
+    auto a = t.findFirst("a");
+    auto t_id = a.attribute("href").mid(1);
+    if (ng_topics.contains(t_id)) {
+      t.setAttribute("style","display:none");
+    }
+  }
+}
 
 void MainWindow::process_res()
 {
@@ -316,6 +337,7 @@ void MainWindow::handleLinkHover(const QString & link, const QString &, const QS
 void MainWindow::setDock()
 {
   auto dock = new QDockWidget(tr("Topic List"), this);
+  dock->setObjectName("Topic List Dock");
   topic_list = new TopicList(this);
   connect(topic_list,SIGNAL(topicClicked(QString)),this,SLOT(openTopic(QString)));
   connect(this,SIGNAL(mouseGestured(QString)),topic_list,SLOT(handleMouseGesture(QString)));
@@ -345,6 +367,7 @@ void MainWindow::setView()
   connect(view, SIGNAL(titleChanged(QString)), SLOT(adjustTitle()));
   connect(view, SIGNAL(loadProgress(int)), SLOT(setProgress(int)));
   connect(view, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
+  connect(view, SIGNAL(addNG(QString)),SLOT(addNGTopic(QString)));
 
   connect(view, SIGNAL(linkClicked(const QUrl)),SLOT(linkClicked(const QUrl)));  
 }
@@ -390,4 +413,13 @@ void MainWindow::setStatusBar()
   auto sb = statusBar();
   sb->show();
   connect(this,SIGNAL(mouseGestureUpdated(QString)),sb,SLOT(showMessage(QString)));
+}
+void MainWindow::addNGTopic(const QString& t_id)
+{
+  if (!ng_topics.contains(t_id)) {
+    ng_topics << t_id;
+  } else {
+    qDebug() << "Dupulicated NG topic request.";
+  }
+  process_toppage();
 }

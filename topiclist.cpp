@@ -97,6 +97,9 @@ void TopicList::setWidgets()
   text_area->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
   connect(text_area,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
   layout->addWidget(text_area);
+  pb = new QPushButton("Mark all as read",this);
+  connect(pb,SIGNAL(clicked()),this,SLOT(mark_all_as_read()));
+  layout->addWidget(pb);
   setLayout(layout);
 }
 
@@ -215,4 +218,11 @@ const QJsonObject& TopicList::getTopic(const QString& t_id)
 const QJsonObject& TopicList::getTopic(int t_id)
 {
   return topics[t_id].first;
+}
+void TopicList::mark_all_as_read()
+{
+  for (auto &t : topics) {
+    t.second.first = t.second.second;
+  }
+  update_view();
 }

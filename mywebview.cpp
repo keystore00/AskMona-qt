@@ -5,8 +5,10 @@
 #include <QWebFrame>
 #include <QDebug>
 #include <QTimeLine>
-#include <cstdlib>
+#include <QWebElement>
+#include <QSignalMapper>
 #include <iostream>
+#include "constants.h"
 using namespace std;
 
 MyWebView::MyWebView(QWidget *parent) :
@@ -57,15 +59,26 @@ void MyWebView::setScrollBarPos(int pos)
 
 void MyWebView::customMenuRequested(QPoint pos){
   QMenu *menu=new QMenu(this);
-  auto qa = new QAction("Top", this);
+  auto qa = new QAction("Top", menu);
   connect(qa,SIGNAL(triggered()),this,SLOT(scrollToTop()));
   menu->addAction(qa);
-  qa = new QAction("Bottom", this);
+  qa = new QAction("Bottom", menu);
   connect(qa,SIGNAL(triggered()),this,SLOT(scrollToBottom()));
   menu->addAction(qa);
   menu->addAction(pageAction(QWebPage::Reload));
+  auto link = page()->mainFrame()->hitTestContent(pos).linkElement();
+  if (url().toString()==ask_url_base+"/" && !link.attribute("href").isEmpty()) {
+    qa = new QAction("NG", menu);
+    menu->addAction(qa);
+    auto signalMapper = new QSignalMapper(menu);
+    connect(qa,SIGNAL(triggered()),signalMapper,SLOT(map()));
+    auto t_id = link.attribute("href").mid(1);
+    signalMapper->setMapping(qa,t_id);
+    connect (signalMapper, SIGNAL(mapped(QString)), this, SIGNAL(addNG(QString))) ;
+  }
   menu->popup(mapToGlobal(pos));
 }
+
 void MyWebView::handleMouseGesture(const QString& g)
 {
   if (!underMouse()) {

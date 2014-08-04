@@ -30,6 +30,7 @@ public slots:
   void handleMouseGesture(const QString&);
   const QJsonObject& getTopic(const QString& t_id);
   const QJsonObject& getTopic(int t_id);
+  void mark_all_as_read();
 private:
   TopicView *text_area;
   QNetworkAccessManager *nam;
