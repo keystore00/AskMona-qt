@@ -224,6 +224,8 @@ void MainWindow::linkClicked(const QUrl &url)
 {
   if (url.toString().startsWith("http://askmona.org")) {
     view->load(url);
+  } else if (url.toString().startsWith("http://i.imgur.com")) {
+    view->load(url);
   } else {
     //external link
     QMessageBox::StandardButton reply;
@@ -383,10 +385,25 @@ void MainWindow::setToolBar()
   connect(this,SIGNAL(topicOpend(QString)),this,SLOT(openTopic(QString)));
 
   QToolBar *toolBar = addToolBar(tr("Navigation Bar"));
+  QIcon backward(":/img/backward.png");
+  backward.addPixmap(QPixmap(":/img/backward_disabled.png"),QIcon::Disabled);
+  view->pageAction(QWebPage::Back)->setIcon(backward);
   toolBar->addAction(view->pageAction(QWebPage::Back));
+  QIcon forward(":/img/forward.png");
+  forward.addPixmap(QPixmap(":/img/forward_disabled.png"),QIcon::Disabled);
+  view->pageAction(QWebPage::Forward)->setIcon(forward);
   toolBar->addAction(view->pageAction(QWebPage::Forward));
+  QIcon reload(":/img/reload.png");
+  reload.addPixmap(QPixmap(":/img/reload_disabled.png"),QIcon::Disabled);
+  view->pageAction(QWebPage::Reload)->setIcon(reload);
   toolBar->addAction(view->pageAction(QWebPage::Reload));
+  QIcon stop(":/img/stop.png");
+  stop.addPixmap(QPixmap(":/img/stop_disabled.png"),QIcon::Disabled);
+  view->pageAction(QWebPage::Stop)->setIcon(stop);
   toolBar->addAction(view->pageAction(QWebPage::Stop));
+  auto qa = new QAction(QIcon(":img/home.png"),"home",this);
+  connect(qa,SIGNAL(triggered()),this,SLOT(gotohome()));
+  toolBar->addAction(qa);
   toolBar->addWidget(locationEdit);
   toolBar->addWidget(findEdit);
 
@@ -422,4 +439,8 @@ void MainWindow::addNGTopic(const QString& t_id)
     qDebug() << "Dupulicated NG topic request.";
   }
   process_toppage();
+}
+void MainWindow::gotohome()
+{
+  linkClicked(ask_url_base);
 }

@@ -6,8 +6,15 @@
          <file>topiclist.html</file>
          <file>topiclist_item.html</file>
          <file>topiclist.css</file>
-     </qresource>
-     <qresource prefix="/img" >
-         <file>icon.png</file>
+         <file>img/home.png</file>
+         <file>img/forward.png</file>
+         <file>img/forward_disabled.png</file>
+         <file>img/backward.png</file>
+         <file>img/backward_disabled.png</file>
+         <file>img/reload.png</file>
+         <file>img/reload_disabled.png</file>
+         <file>img/stop.png</file>
+         <file>img/stop_disabled.png</file>
+         <file>img/icon.png</file>
      </qresource>
  </RCC>
