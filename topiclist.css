@@ -3,6 +3,7 @@
     font-family:sans-serif;
     font-size:12px;
 }
+body {-webkit-user-select: none;}
 a:link {color:black; text-decoration:none;}
 a:hover {color:blue; text-decoration:underline}
 a.del:link {color:red; text-decoration:none;}
