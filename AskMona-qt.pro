@@ -14,7 +14,8 @@ SOURCES += main.cpp\
     mywebview.cpp \
     topiclist.cpp \
     constants.cpp \
-    topicview.cpp
+    topicview.cpp \
+    util.cpp
 
 HEADERS  += mainwindow.h \
     mywebpage.h \
@@ -22,7 +23,8 @@ HEADERS  += mainwindow.h \
     mywebview.h \
     topiclist.h \
     constants.h \
-    topicview.h
+    topicview.h \
+    util.h
 
 CONFIG += c++11 static
 RC_FILE = icon.rc

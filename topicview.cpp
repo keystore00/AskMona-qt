@@ -2,18 +2,8 @@
 #include <QMouseEvent>
 #include <QCoreApplication>
 #include <QDebug>
-namespace {
-  QString loadEmbeddedOrFile(const QString& filename) {
-    QFile file(QCoreApplication::applicationDirPath()+"/"+filename);
-    if (!file.exists()) {
-      file.setFileName(":/"+filename);
-    } else {
-      qDebug() << "File is loaded from" << file.fileName();
-    }
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    return file.readAll();
-  }
-}
+#include "util.h"
+
 TopicView::TopicView(QWidget *parent) :
     QWebView(parent)
 {
