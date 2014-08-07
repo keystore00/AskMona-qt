@@ -1,0 +1,29 @@
+QWidget {
+    background-color: #86ce86;
+}
+QToolBar, QStatusBar {
+    border-width: 2px;
+    border-color: gray;
+    border-style: solid;
+}
+QPushButton, QComboBox, QSpinBox, QLineEdit{
+    border-width: 2px;
+    border-color: gray;
+    background: #ebebeb;
+    border-style: solid;
+    padding: 1px;
+}
+QPushButton:hover, QComboBox:hover, QSpinBox:hover, QLineEdit:hover{
+    background-color: beige;
+}
+QSpinBox, QAction {
+    padding:0;
+}
+QToolBar, QStatusBar, QToolButton {
+    background-color:#22b14c
+}
+QMainWindow::separator {
+    background: gray;
+    width: 2px;
+    height: 2px;
+}
