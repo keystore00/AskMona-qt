@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Exec="$HOME/.local/bin/AskMona-qt %u"
+Icon=AskMona-qt
+Terminal=false
+Name=AskMona-qt
+Comment=An Ask Mona browser
+Categories=Network;WebBrowser;

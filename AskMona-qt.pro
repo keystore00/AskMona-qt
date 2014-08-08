@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     topiclist.cpp \
     constants.cpp \
     topicview.cpp \
-    util.cpp
+    util.cpp \
+    topicobject.cpp
 
 HEADERS  += mainwindow.h \
     mywebpage.h \
@@ -24,7 +25,8 @@ HEADERS  += mainwindow.h \
     topiclist.h \
     constants.h \
     topicview.h \
-    util.h
+    util.h \
+    topicobject.h
 
 CONFIG += c++11 static
 RC_FILE = icon.rc

@@ -51,14 +51,15 @@ void TopicList::loadTopics(const QString& filename)
   auto array = doc.array();
   for (const auto &t : array) {
     auto obj = t.toObject();
-    topics[obj["t_id"].toInt()] = TopicPair(obj,obj);
+    auto t_obj = TopicObject::New(obj);
+    topics[t_obj->t_id] = TopicPair(t_obj,t_obj);
   }
 }
 void TopicList::saveTopics(const QString& filename)
 {
   QJsonArray ja;
   for (const auto &t:topics) {
-    ja.push_back(t.second.first);
+    ja.push_back(t.second.first->obj);
   }
   QFile jsonFile(filename);
   if (!jsonFile.open(QIODevice::WriteOnly)) {
@@ -125,16 +126,16 @@ void TopicList::update_view()
     KeyValueType key_value = 0;
     switch (key) {
     case k_modified:
-      key_value = current["modified"].toInt();
+      key_value = current->modified;
       break;
     case k_res:
-      key_value = current["count"].toInt() - last["count"].toInt();
+      key_value = current->count - last->count;
       break;
     case k_MONA:
-      key_value = current["receive"].toString().toULongLong() - last["receive"].toString().toULongLong();
+      key_value = current->receive - last->receive;
       break;
     default:
-      key_value = current["t_id"].toInt();
+      key_value = current->t_id;
       break;
     }
     key_value = std::numeric_limits<KeyValueType>::max()-key_value; //descending order
@@ -179,16 +180,16 @@ void TopicList::finishedSlot(QNetworkReply* reply)
     if (res.contains("topics")) { //update topic list
       auto array = res["topics"].toArray();
       for (auto t : array) {
-	auto t_obj = t.toObject();
-	auto t_id = t_obj["t_id"].toInt();
+	auto t_obj = TopicObject::New(t.toObject());
+	auto t_id = t_obj->t_id;
 	auto it = topics.find(t_id);
 	if (it != topics.end()) {
 	  it->second.second=t_obj;
 	}
       }
     } else if (res.contains("topic")) { //add topic
-      auto topic_obj = res["topic"].toObject();
-      topics[topic_obj["t_id"].toInt()] = TopicPair(topic_obj,topic_obj);
+      auto topic_obj = TopicObject::New(res["topic"].toObject());
+      topics[topic_obj->t_id] = TopicPair(topic_obj,topic_obj);
       update_view();
     }
   }
@@ -216,11 +217,11 @@ void TopicList::handleMouseGesture(const QString& g)
     return;
   }
 }
-const QJsonObject& TopicList::getTopic(const QString& t_id)
+const TopicObjectPtr TopicList::getTopic(const QString& t_id)
 {
   return getTopic(t_id.toInt());
 }
-const QJsonObject& TopicList::getTopic(int t_id)
+const TopicObjectPtr TopicList::getTopic(int t_id)
 {
   return topics[t_id].first;
 }

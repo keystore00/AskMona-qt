@@ -211,11 +211,11 @@ void MainWindow::process_res()
 void MainWindow::insert_bookmark(const QString& t_id)
 {
   auto t = topic_list->getTopic(t_id);
-  if (!t.contains("count")) {
+  if (!t) {
     //invalid object
     return;
   }
-  auto kokomade = QString::number(t["count"].toInt());
+  auto kokomade = QString::number(t->count);
   auto last_res = view->page()->mainFrame()->documentElement().findFirst("p#res_"+kokomade);
   last_res.nextSibling().appendOutside(bookmark);
   view->page()->mainFrame()->evaluateJavaScript("window.location.hash = '#res_"+kokomade+"';null");

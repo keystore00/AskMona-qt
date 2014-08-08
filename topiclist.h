@@ -2,8 +2,8 @@
 #define TOPICLIST_H
 
 #include <QWidget>
-#include <QJsonObject>
 #include <map>
+#include "topicobject.h"
 class QLabel;
 class QTextBrowser;
 class QNetworkAccessManager;
@@ -17,7 +17,7 @@ class TopicList : public QWidget
 public:
   explicit TopicList(QWidget *parent = 0);
   ~TopicList();
-  typedef std::pair<QJsonObject,QJsonObject> TopicPair;
+  typedef std::pair<TopicObjectPtr,TopicObjectPtr> TopicPair;
   typedef std::map<int,TopicPair> TopicPairListType;
 
 signals:
@@ -28,8 +28,8 @@ public slots:
   void linkClicked(const QUrl&);
   void update();
   void handleMouseGesture(const QString&);
-  const QJsonObject& getTopic(const QString& t_id);
-  const QJsonObject& getTopic(int t_id);
+  const TopicObjectPtr getTopic(const QString& t_id);
+  const TopicObjectPtr getTopic(int t_id);
   void mark_all_as_read();
 private:
   TopicView *text_area;
