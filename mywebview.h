@@ -7,6 +7,7 @@ class MyWebView : public QWebView
 {
   Q_OBJECT
 public:
+  using QWebView::load;
   explicit MyWebView(QWidget *parent = 0);
 protected:
   void mousePressEvent(QMouseEvent* e);
@@ -21,6 +22,7 @@ public slots:
   void customMenuRequested(QPoint pos);
   void handleMouseGesture(const QString&);
   void setScrollBarPos(int pos);
+  void load(const QString& url);
 private:
   QTimeLine* timeLine;
 };

@@ -59,22 +59,28 @@ void MyWebView::setScrollBarPos(int pos)
 
 void MyWebView::customMenuRequested(QPoint pos){
   QMenu *menu=new QMenu(this);
-  auto qa = new QAction("Top", menu);
-  connect(qa,SIGNAL(triggered()),this,SLOT(scrollToTop()));
-  menu->addAction(qa);
-  qa = new QAction("Bottom", menu);
-  connect(qa,SIGNAL(triggered()),this,SLOT(scrollToBottom()));
-  menu->addAction(qa);
   menu->addAction(pageAction(QWebPage::Reload));
   auto link = page()->mainFrame()->hitTestContent(pos).linkElement();
   if (url().toString()==ask_url_base+"/" && !link.attribute("href").isEmpty()) {
-    qa = new QAction("NG", menu);
+    auto qa = new QAction("NG", menu);
     menu->addAction(qa);
     auto signalMapper = new QSignalMapper(menu);
     connect(qa,SIGNAL(triggered()),signalMapper,SLOT(map()));
     auto t_id = link.attribute("href").mid(1);
     signalMapper->setMapping(qa,t_id);
     connect (signalMapper, SIGNAL(mapped(QString)), this, SIGNAL(addNG(QString))) ;
+  }
+  if (!selectedText().isEmpty()) {
+    auto url = "https://www.google.co.jp/search?q="+QString(QUrl::toPercentEncoding(selectedText()));
+    auto qa = new QAction("Search Google for \""+(selectedText().length()>5?selectedText().mid(0,5)+"...":selectedText())+"\"", menu);
+    menu->addAction(qa);
+    auto signalMapper = new QSignalMapper(menu);
+    connect(qa,SIGNAL(triggered()),signalMapper,SLOT(map()));
+    signalMapper->setMapping(qa,url);
+    connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(load(QString)));
+  }
+  if (!selectedText().isEmpty()) {
+    menu->addAction(pageAction(QWebPage::Copy));
   }
   menu->popup(mapToGlobal(pos));
 }
@@ -96,4 +102,9 @@ void MyWebView::handleMouseGesture(const QString& g)
   } if (g == "") {
     customMenuRequested(mapFromGlobal(QCursor::pos()));
   }
+}
+void MyWebView::load(const QString& url)
+{
+  qDebug() << url;
+  load(QUrl(url));
 }
