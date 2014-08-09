@@ -76,10 +76,10 @@ void TopicList::setWidgets()
   auto hlayout = new QHBoxLayout();
   QIcon reload(":/img/reload.png");
   reload.addPixmap(QPixmap(":/img/reload_disabled.png"),QIcon::Disabled);
-  auto pb = new QPushButton(reload,"",this);
-  pb->setToolTip("Update topic information for last N topics.");
-  connect(pb,SIGNAL(clicked()),this,SLOT(update()));
-  hlayout->addWidget(pb);
+  reload_button = new QPushButton(reload,"",this);
+  reload_button->setToolTip("Update topic information for last N topics.");
+  connect(reload_button,SIGNAL(clicked()),this,SLOT(update()));
+  hlayout->addWidget(reload_button);
   cbox = new QComboBox(this);
   cbox->addItem("Default");
   cbox->setItemData(0, "Default order in Ask Mona.", Qt::ToolTipRole);
@@ -103,7 +103,7 @@ void TopicList::setWidgets()
   text_area->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
   connect(text_area,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
   layout->addWidget(text_area);
-  pb = new QPushButton("Mark all as read",this);
+  auto pb = new QPushButton("Mark all as read",this);
   connect(pb,SIGNAL(clicked()),this,SLOT(mark_all_as_read()));
   layout->addWidget(pb);
   setLayout(layout);
@@ -162,6 +162,7 @@ void TopicList::linkClicked(const QUrl& url)
 void TopicList::update()
 {
   if (last_reload - time((time_t)NULL)) {
+    reload_button->setEnabled(false);
     QNetworkRequest request(QUrl(ask_topic_api+"?limit="+QString::number(num_update_box->value())));
     nam->get(request);
     last_reload = time((time_t)NULL);    
@@ -178,6 +179,7 @@ void TopicList::finishedSlot(QNetworkReply* reply)
     return;
   } else {
     if (res.contains("topics")) { //update topic list
+      reload_button->setEnabled(true);
       auto array = res["topics"].toArray();
       for (auto t : array) {
 	auto t_obj = TopicObject::New(t.toObject());

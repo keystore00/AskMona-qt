@@ -10,6 +10,7 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QComboBox;
 class QSpinBox;
+class QPushButton;
 class TopicView;
 class TopicList : public QWidget
 {
@@ -36,6 +37,7 @@ private:
   QNetworkAccessManager *nam;
   QComboBox *cbox;
   QSpinBox *num_update_box;
+  QPushButton *reload_button;
   TopicPairListType topics;
   void setWidgets();
   void loadTopics(const QString& filename);
