@@ -15,8 +15,7 @@ public:
   int rank,t_id,cat_id,count,favorites;
   unsigned long long receive;
   unsigned long long  created,updated,modified;
-  QString title,category,lead;
-  QStringList tags;
+  QString title,category,lead,tags;
   QJsonObject obj;
 private:
   TopicObject(const QJsonObject& json);

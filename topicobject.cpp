@@ -1,9 +1,10 @@
 #include "topicobject.h"
 #include <QJsonArray>
 #include <QVariant>
+#include <algorithm>
 
 TopicObject::TopicObject(const QJsonObject& json)
-  : title(json["title"].toString()), category(json["category"].toString()), lead(json["lead"].toString()), obj(json)
+  : title(json["title"].toString()), category(json["category"].toString()), lead(json["lead"].toString()), tags(json["tags"].toString()), obj(json)
 {
   rank = json["rank"].toInt();
   t_id = json["t_id"].toInt();
@@ -13,12 +14,6 @@ TopicObject::TopicObject(const QJsonObject& json)
   modified = json["modified"].toVariant().toULongLong();
   count = json["count"].toInt();
   receive = json["receive"].toString().toULongLong();
-  if (json.contains("tags")) {
-    auto vt = json["tags"].toArray();
-    for (const auto& t : vt) {
-      tags << t.toString();
-    }
-  }
 }
 
 TopicObjectPtr TopicObject::New(const QJsonObject& json)

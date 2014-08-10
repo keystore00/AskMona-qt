@@ -56,8 +56,7 @@ void TopicView::set(const TopicPairList& topics)
     QString res_class = dr?"updated":"noupdate";
     auto dm = fromSatoshi(current->receive - last->receive);
     QString mona_class = dm?"updated":"noupdate";
-    auto tags = last->tags.join(",");
-    auto tmp = topic_view_item.arg(t_id, last->title, QString::number(last->cat_id), last->category, tags, last->lead,QString::number(last->created), QString::number(last->updated), QString::number(last->modified));
+    auto tmp = topic_view_item.arg(t_id, last->title, QString::number(last->cat_id), last->category, last->tags, last->lead,QString::number(last->created), QString::number(last->updated), QString::number(last->modified));
     body += tmp.arg(QString::number(last->count), res_class, QString::number(dr), QString::number(fromSatoshi(last->receive)), mona_class, QString::number(dm), QString::number(last->favorites));
   }
   auto tmp = topic_view_html.arg(topic_view_style, body);

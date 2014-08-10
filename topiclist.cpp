@@ -14,6 +14,7 @@
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QApplication>
+#include <QTimer>
 #include <queue>
 #include <ctime>
 #include "constants.h"
@@ -24,6 +25,7 @@ namespace {
   time_t last_reload;
   std::map<QString,enum sort_key> sort_key_map = {{"Default",k_modified},{"Res.",k_res},{"MONA",k_MONA}};
   QString fname = "/dat/topic_list.json";
+  static const int n_timeout = 1;
 }
 TopicList::TopicList(QWidget *parent) :
   QWidget(parent)
@@ -78,7 +80,7 @@ void TopicList::setWidgets()
   reload.addPixmap(QPixmap(":/img/reload_disabled.png"),QIcon::Disabled);
   reload_button = new QPushButton(reload,"",this);
   reload_button->setToolTip("Update topic information for last N topics.");
-  connect(reload_button,SIGNAL(clicked()),this,SLOT(update()));
+  connect(reload_button,&QPushButton::clicked,this,&TopicList::update);
   hlayout->addWidget(reload_button);
   cbox = new QComboBox(this);
   cbox->addItem("Default");
@@ -101,6 +103,7 @@ void TopicList::setWidgets()
   text_area = new TopicView(this);
   text_area->setContextMenuPolicy(Qt::CustomContextMenu);
   text_area->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+  text_area->page()->mainFrame()->setHtml("Loading...");
   connect(text_area,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
   layout->addWidget(text_area);
   auto pb = new QPushButton("Mark all as read",this);
@@ -161,13 +164,16 @@ void TopicList::linkClicked(const QUrl& url)
 
 void TopicList::update()
 {
-  if (last_reload - time((time_t)NULL)) {
+  if ((time((time_t)NULL) - last_reload) > n_timeout) {
     reload_button->setEnabled(false);
+    auto timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [=](){reload_button->setEnabled(true);});
+    timer->start(n_timeout*1000);
     QNetworkRequest request(QUrl(ask_topic_api+"?limit="+QString::number(num_update_box->value())));
     nam->get(request);
-    last_reload = time((time_t)NULL);    
+    last_reload = time((time_t)NULL);
   } else {
-    qWarning() << "Last update is less than 1 sec. ago.";
+    qWarning() << "Last update is less than" << n_timeout << "sec. ago.";
   }
 }
 void TopicList::finishedSlot(QNetworkReply* reply)
@@ -179,7 +185,6 @@ void TopicList::finishedSlot(QNetworkReply* reply)
     return;
   } else {
     if (res.contains("topics")) { //update topic list
-      reload_button->setEnabled(true);
       auto array = res["topics"].toArray();
       for (auto t : array) {
 	auto t_obj = TopicObject::New(t.toObject());
@@ -192,7 +197,6 @@ void TopicList::finishedSlot(QNetworkReply* reply)
     } else if (res.contains("topic")) { //add topic
       auto topic_obj = TopicObject::New(res["topic"].toObject());
       topics[topic_obj->t_id] = TopicPair(topic_obj,topic_obj);
-      update_view();
     }
   }
   update_view();
