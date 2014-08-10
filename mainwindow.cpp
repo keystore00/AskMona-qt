@@ -332,10 +332,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* e)
     }
   }
 }
-void MainWindow::handleLinkHover(const QString & link, const QString &, const QString &)
-{
-  statusBar()->showMessage(link);
-}
 void MainWindow::setDock()
 {
   auto dock = new QDockWidget(tr("Topic List"), this);
@@ -350,7 +346,7 @@ void MainWindow::setView()
 {
   view = new MyWebView(this);
   auto page = new MyWebPage(this);
-  connect(page,SIGNAL(linkHovered(QString, QString, QString)),this,SLOT(handleLinkHover(QString, QString, QString)));
+  connect(page,&MyWebPage::linkHovered,[this](const QString & link, const QString &, const QString &){statusBar()->showMessage(link);});
   view->setPage(page);
   view->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
   connect(this,SIGNAL(mouseGestured(QString)),view,SLOT(handleMouseGesture(QString)));
@@ -402,7 +398,7 @@ void MainWindow::setToolBar()
   view->pageAction(QWebPage::Stop)->setIcon(stop);
   toolBar->addAction(view->pageAction(QWebPage::Stop));
   auto qa = new QAction(QIcon(":img/home.png"),"home",this);
-  connect(qa,SIGNAL(triggered()),this,SLOT(gotohome()));
+  connect(qa,&QAction::triggered,[this](){linkClicked(ask_url_base);});
   toolBar->addAction(qa);
   toolBar->addWidget(locationEdit);
   toolBar->addWidget(findEdit);
@@ -436,11 +432,7 @@ void MainWindow::addNGTopic(const QString& t_id)
   if (!ng_topics.contains(t_id)) {
     ng_topics << t_id;
   } else {
-    qDebug() << "Dupulicated NG topic request.";
+    qDebug() << "Dupulicated NG topic request." << t_id;
   }
   process_toppage();
-}
-void MainWindow::gotohome()
-{
-  linkClicked(ask_url_base);
 }

@@ -31,10 +31,8 @@ protected slots:
   void findText(const QString&);
   void debug();
   void openTopic(const QString& t_id);
-  void handleLinkHover(const QString&, const QString&, const QString&);
   void insert_bookmark(const QString& t_id);
   void addNGTopic(const QString& t_id);
-  void gotohome();
 protected:
   void mousePressEvent(QMouseEvent* e);
   void mouseMoveEvent(QMouseEvent* e);

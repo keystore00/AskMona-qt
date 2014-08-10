@@ -6,7 +6,6 @@
 #include <QDebug>
 #include <QTimeLine>
 #include <QWebElement>
-#include <QSignalMapper>
 #include <iostream>
 #include "constants.h"
 using namespace std;
@@ -64,20 +63,14 @@ void MyWebView::customMenuRequested(QPoint pos){
   if (url().toString()==ask_url_base+"/" && !link.attribute("href").isEmpty()) {
     auto qa = new QAction("NG", menu);
     menu->addAction(qa);
-    auto signalMapper = new QSignalMapper(menu);
-    connect(qa,SIGNAL(triggered()),signalMapper,SLOT(map()));
     auto t_id = link.attribute("href").mid(1);
-    signalMapper->setMapping(qa,t_id);
-    connect (signalMapper, SIGNAL(mapped(QString)), this, SIGNAL(addNG(QString))) ;
+    connect(qa,&QAction::triggered,[=](){addNG(t_id);});
   }
   if (!selectedText().isEmpty()) {
     auto url = "https://www.google.co.jp/search?q="+QString(QUrl::toPercentEncoding(selectedText()));
     auto qa = new QAction("Search Google for \""+(selectedText().length()>5?selectedText().mid(0,5)+"...":selectedText())+"\"", menu);
     menu->addAction(qa);
-    auto signalMapper = new QSignalMapper(menu);
-    connect(qa,SIGNAL(triggered()),signalMapper,SLOT(map()));
-    signalMapper->setMapping(qa,url);
-    connect (signalMapper, SIGNAL(mapped(QString)), this, SLOT(load(QString)));
+    connect(qa,&QAction::triggered,[=](){load(url);});
   }
   if (!selectedText().isEmpty()) {
     menu->addAction(pageAction(QWebPage::Copy));

@@ -167,7 +167,8 @@ void TopicList::update()
   if ((time((time_t)NULL) - last_reload) > n_timeout) {
     reload_button->setEnabled(false);
     auto timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [=](){reload_button->setEnabled(true);});
+    timer->setSingleShot(true);
+    connect(timer, &QTimer::timeout, [this](){reload_button->setEnabled(true);});
     timer->start(n_timeout*1000);
     QNetworkRequest request(QUrl(ask_topic_api+"?limit="+QString::number(num_update_box->value())));
     nam->get(request);
