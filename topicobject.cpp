@@ -1,7 +1,6 @@
 #include "topicobject.h"
 #include <QJsonArray>
 #include <QVariant>
-#include <algorithm>
 
 TopicObject::TopicObject(const QJsonObject& json)
   : title(json["title"].toString()), category(json["category"].toString()), lead(json["lead"].toString()), tags(json["tags"].toString()), obj(json)

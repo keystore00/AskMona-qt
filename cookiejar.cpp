@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include <QCoreApplication>
 #include <QFile>
+#include "util.h"
 
 namespace {
   QString fname = "/dat/cookie.json";
@@ -11,12 +12,12 @@ namespace {
 CookieJar::CookieJar(QObject *parent) :
   QNetworkCookieJar(parent)
 {
-  loadCookies(QCoreApplication::applicationDirPath()+fname);
+  loadCookies(getDataDir()+fname);
 }
 
 CookieJar::~CookieJar()
 {
-  saveCookies(QCoreApplication::applicationDirPath()+fname);
+  saveCookies(getDataDir()+fname);
 }
 
 void CookieJar::loadCookies(const QString& filename)

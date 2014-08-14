@@ -22,7 +22,7 @@ private:
   TopicObject() = delete;
   TopicObject(const TopicObject &) = delete;
   TopicObject(TopicObject &&) = delete;
-  TopicObject &operator=(const TopicObject) = delete;
+  TopicObject &operator=(const TopicObject&) = delete;
   TopicObject &operator=(TopicObject&&) = delete;
 };
 

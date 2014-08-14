@@ -2,13 +2,27 @@
 #include <QFile>
 #include <QCoreApplication>
 #include <QDebug>
+namespace {
+  QString datadir = "";
+}
+void setDataDir(const QString& dir) {
+  datadir = dir;
+}
+QString getDataDir()
+{
+  if (datadir.isEmpty()) {
+    return QCoreApplication::applicationDirPath();
+  } else {
+    return datadir;
+  }
+}
 QString loadEmbeddedOrFile(const QString& filename)
 {
-  QFile file(QCoreApplication::applicationDirPath()+"/"+filename);
+  QFile file(getDataDir()+"/"+filename);
   if (!file.exists()) {
     file.setFileName(":/"+filename);
   } else {
-    qDebug() << "File is loaded from" << file.fileName();
+    qDebug() << "The file is loaded from" << file.fileName();
   }
   file.open(QIODevice::ReadOnly | QIODevice::Text);
   return file.readAll();

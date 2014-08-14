@@ -19,6 +19,7 @@
 #include <ctime>
 #include "constants.h"
 #include "topicview.h"
+#include "util.h"
 
 namespace {
   enum sort_key {k_modified,k_res,k_MONA};
@@ -34,12 +35,12 @@ TopicList::TopicList(QWidget *parent) :
   nam = new QNetworkAccessManager(this);
   QObject::connect(nam, SIGNAL(finished(QNetworkReply*)),this, SLOT(finishedSlot(QNetworkReply*)));
 
-  loadTopics(QCoreApplication::applicationDirPath()+fname);
+  loadTopics(getDataDir()+fname);
 }
 
 TopicList::~TopicList()
 {
-  saveTopics(QCoreApplication::applicationDirPath()+fname);
+  saveTopics(getDataDir()+fname);
 }
 
 void TopicList::loadTopics(const QString& filename)

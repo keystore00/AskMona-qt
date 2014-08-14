@@ -10,11 +10,13 @@ public:
   using QWebView::load;
   explicit MyWebView(QWidget *parent = 0);
 protected:
-  void mousePressEvent(QMouseEvent* e);
-  void mouseMoveEvent(QMouseEvent* e);
-  void mouseReleaseEvent(QMouseEvent* e);
+  void mousePressEvent(QMouseEvent* e) override;
+  void mouseMoveEvent(QMouseEvent* e) override;
+  void mouseReleaseEvent(QMouseEvent* e) override;
+  void wheelEvent (QWheelEvent *e) override;
 signals:
   void addNG(const QString& t_id);
+  void zoomFactorChanged(qreal);
 
 public slots:
   void scrollToTop();

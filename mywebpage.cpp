@@ -5,13 +5,14 @@
 #include <QNetworkCookie>
 #include <QCoreApplication>
 #include "cookiejar.h"
+#include "util.h"
 
 MyWebPage::MyWebPage(QObject *parent) :
   QWebPage(parent)
 {
   auto pNAM = networkAccessManager();
   QNetworkDiskCache * pNDC = new QNetworkDiskCache(parent);
-  pNDC->setCacheDirectory( QCoreApplication::applicationDirPath()+"/cache" );
+  pNDC->setCacheDirectory(getDataDir()+"/cache");
 
   qint64 size = pNDC->cacheSize();
   size = pNDC->maximumCacheSize();

@@ -17,5 +17,8 @@
          <file>img/stop.png</file>
          <file>img/stop_disabled.png</file>
          <file>img/icon.png</file>
+         <file>img/zoom_in.png</file>
+         <file>img/zoom_out.png</file>
+         <file>img/zoom_reset.png</file>
      </qresource>
  </RCC>

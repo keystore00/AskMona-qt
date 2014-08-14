@@ -18,6 +18,7 @@
 #include "mywebview.h"
 #include "topiclist.h"
 #include "constants.h"
+#include "util.h"
 #include <map>
 namespace {
   bool r_clicking = false;
@@ -26,6 +27,11 @@ namespace {
   enum MGesture {MGUp='U',MGDown='D',MGRight='R',MGLeft='L',MGNone='N'};
   enum MGesture last_gesture = MGNone;
   QString gestures;
+
+  bool isTopPage(const QString& url)
+  {
+    return url=="http://askmona.org/" || url.startsWith("http://askmona.org/topics/");
+  }
 }
 MainWindow::MainWindow()
 {
@@ -38,23 +44,10 @@ MainWindow::MainWindow()
 	qDebug() << "dat directory created.";
       } else {
 	qDebug() << "Failed to make dat directory.";
-      }      
+      }
     }
-
-    QFile file;
-    file.setFileName(":/popup.js");
-    file.open(QIODevice::ReadOnly);
-    popupjs = file.readAll();
-    file.close();
-
-    QFile bmfile(QCoreApplication::applicationDirPath()+"/bookmark.html");
-    if (!bmfile.exists()) {
-      bmfile.setFileName(":/bookmark.html");
-    } else {
-      qDebug() << "Bookmark is loaded from" << bmfile.fileName();
-    }
-    bmfile.open(QIODevice::ReadOnly | QIODevice::Text);
-    bookmark = QString(bmfile.readAll());
+    popupjs = loadEmbeddedOrFile("popup.js");
+    bookmark = loadEmbeddedOrFile("bookmark.html");
   }
   progress = 0;
   QNetworkProxyFactory::setUseSystemConfiguration(true);
@@ -72,7 +65,7 @@ MainWindow::~MainWindow()
 }
 void MainWindow::readSettings()
 {
-  QSettings settings(QCoreApplication::applicationDirPath()+"/settings.ini",QSettings::IniFormat,this);
+  QSettings settings(getDataDir()+"/settings.ini",QSettings::IniFormat,this);
   restoreGeometry(settings.value("geometry").toByteArray());
   restoreState(settings.value("windowState").toByteArray());
   QDataStream ds(settings.value("ng_topics").toByteArray());
@@ -80,7 +73,7 @@ void MainWindow::readSettings()
 }
 void MainWindow::saveSettings()
 {
-  QSettings settings(QCoreApplication::applicationDirPath()+"/settings.ini",QSettings::IniFormat,this);
+  QSettings settings(getDataDir()+"/settings.ini",QSettings::IniFormat,this);
   settings.setValue("geometry", saveGeometry());
   settings.setValue("windowState", saveState());
   QByteArray ba;
@@ -131,7 +124,7 @@ void MainWindow::finishLoading(bool)
     topic_list->addTopic(t_id);
     return;
   }
-  if (view->url().toString()=="http://askmona.org/") {
+  if (isTopPage(view->url().toString())) {
     process_toppage();
   }
 }
@@ -222,19 +215,7 @@ void MainWindow::insert_bookmark(const QString& t_id)
 }
 void MainWindow::linkClicked(const QUrl &url)
 {
-  if (url.toString().startsWith("http://askmona.org")) {
-    view->load(url);
-  } else if (url.toString().startsWith("http://i.imgur.com")) {
-    view->load(url);
-  } else {
-    //external link
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Kakunin", "Open the following link?\n"+url.toDisplayString(),QMessageBox::Yes|QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
-      QDesktopServices::openUrl(url);
-    } else {
-    }
-  }
+  view->load(url);
 }
 
 void MainWindow::findText()
@@ -367,20 +348,12 @@ void MainWindow::setView()
   connect(view, SIGNAL(loadFinished(bool)), SLOT(finishLoading(bool)));
   connect(view, SIGNAL(addNG(QString)),SLOT(addNGTopic(QString)));
 
-  connect(view, SIGNAL(linkClicked(const QUrl)),SLOT(linkClicked(const QUrl)));  
+  connect(view, SIGNAL(linkClicked(const QUrl)),SLOT(linkClicked(const QUrl)));
 }
 void MainWindow::setToolBar()
 {
-  locationEdit = new QLineEdit(this);
-  locationEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
-  connect(locationEdit, SIGNAL(returnPressed()), SLOT(changeLocation()));
-  findEdit = new QLineEdit("find",this);
-  findEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
-  connect(findEdit, SIGNAL(returnPressed()), SLOT(findText()));
-  connect(findEdit, SIGNAL(textChanged(QString)), SLOT(findText(QString)));
-  connect(this,SIGNAL(topicOpend(QString)),this,SLOT(openTopic(QString)));
-
-  QToolBar *toolBar = addToolBar(tr("Navigation Bar"));
+  QToolBar *toolBar = addToolBar(tr("Navigation Buttons"));
+  toolBar->setObjectName("Navigation Buttons");
   QIcon backward(":/img/backward.png");
   backward.addPixmap(QPixmap(":/img/backward_disabled.png"),QIcon::Disabled);
   view->pageAction(QWebPage::Back)->setIcon(backward);
@@ -400,6 +373,40 @@ void MainWindow::setToolBar()
   auto qa = new QAction(QIcon(":img/home.png"),"home",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(ask_url_base);});
   toolBar->addAction(qa);
+
+  auto zoomBar = addToolBar(tr("Zoom Buttons"));
+  zoomBar->setObjectName("Zoom Buttons");
+  auto label = new QLineEdit("100%",zoomBar);
+  label->setReadOnly(true);
+  connect(view,&MyWebView::zoomFactorChanged,[this,label](qreal factor){label->setText(QString::number(factor*100)+"%");});
+  qa = new QAction("Zoom In",this);
+  QIcon zoom_in(":/img/zoom_in.png");
+  qa->setIcon(zoom_in);
+  connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()+0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
+  zoomBar->addAction(qa);
+  qa = new QAction("Zoom Out",this);
+  QIcon zoom_out(":/img/zoom_out.png");
+  qa->setIcon(zoom_out);
+  connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()-0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
+  zoomBar->addAction(qa);
+  qa = new QAction("Reset",this);
+  QIcon zoom_reset(":/img/zoom_reset.png");
+  qa->setIcon(zoom_reset);
+  connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(1.0);label->setText(QString::number(view->zoomFactor()*100)+"%");});
+  zoomBar->addAction(qa);
+  zoomBar->addWidget(label);
+
+  toolBar = addToolBar(tr("Address Bar"));
+  toolBar->setObjectName("Address Bar");
+  locationEdit = new QLineEdit(this);
+  locationEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
+  connect(locationEdit, SIGNAL(returnPressed()), SLOT(changeLocation()));
+  findEdit = new QLineEdit(this);
+  findEdit->setPlaceholderText("find");
+  findEdit->setSizePolicy(QSizePolicy::Expanding, locationEdit->sizePolicy().verticalPolicy());
+  connect(findEdit, SIGNAL(returnPressed()), SLOT(findText()));
+  connect(findEdit, SIGNAL(textChanged(QString)), SLOT(findText(QString)));
+  connect(this,SIGNAL(topicOpend(QString)),this,SLOT(openTopic(QString)));
   toolBar->addWidget(locationEdit);
   toolBar->addWidget(findEdit);
 
@@ -415,7 +422,7 @@ void MainWindow::setShortcut()
   auto ctrl_g = new QShortcut(QKeySequence("CTRL+G"), this);
   connect(ctrl_g, SIGNAL(activated()), this, SLOT(findText()));
   auto ctrl_d = new QShortcut(QKeySequence("CTRL+D"), this);
-  connect(ctrl_d, SIGNAL(activated()), this, SLOT(debug()));  
+  connect(ctrl_d, SIGNAL(activated()), this, SLOT(debug()));
   auto meta_d = new QShortcut(QKeySequence("ALT+D"), this);
   connect(meta_d, SIGNAL(activated()), locationEdit, SLOT(selectAll()));
   connect(meta_d, SIGNAL(activated()), locationEdit, SLOT(setFocus()));
@@ -431,8 +438,8 @@ void MainWindow::addNGTopic(const QString& t_id)
 {
   if (!ng_topics.contains(t_id)) {
     ng_topics << t_id;
+    process_toppage();
   } else {
     qDebug() << "Dupulicated NG topic request." << t_id;
   }
-  process_toppage();
 }

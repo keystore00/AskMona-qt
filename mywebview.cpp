@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QTimeLine>
 #include <QWebElement>
+#include <QDesktopServices>
 #include <iostream>
 #include "constants.h"
 using namespace std;
@@ -39,6 +40,16 @@ void MyWebView::mouseMoveEvent(QMouseEvent* e)
   QWebView::mouseMoveEvent(e);
   e->ignore();
 };
+void MyWebView::wheelEvent(QWheelEvent *e)
+{
+  if (e->modifiers() == Qt::ControlModifier){
+    setZoomFactor(zoomFactor()+e->delta()/120/10.0);
+    emit zoomFactorChanged(zoomFactor());
+  } else {
+    QWebView::wheelEvent(e);
+  }
+};
+
 void MyWebView::scrollToTop() {
   auto cur_pos = static_cast<double>(this->page()->mainFrame()->scrollBarValue(Qt::Vertical))/this->page()->mainFrame()->contentsSize().height() * 100;
   timeLine->setFrameRange(cur_pos, 0);
@@ -59,12 +70,17 @@ void MyWebView::setScrollBarPos(int pos)
 void MyWebView::customMenuRequested(QPoint pos){
   QMenu *menu=new QMenu(this);
   menu->addAction(pageAction(QWebPage::Reload));
-  auto link = page()->mainFrame()->hitTestContent(pos).linkElement();
-  if (url().toString()==ask_url_base+"/" && !link.attribute("href").isEmpty()) {
+  auto link_url = page()->mainFrame()->hitTestContent(pos).linkElement().attribute("href");
+  if (url().toString()==ask_url_base+"/" && link_url.contains(QRegExp("^/\\d+$"))) {
     auto qa = new QAction("NG", menu);
     menu->addAction(qa);
-    auto t_id = link.attribute("href").mid(1);
+    auto t_id = link_url.mid(1);
     connect(qa,&QAction::triggered,[=](){addNG(t_id);});
+  }
+  if (!link_url.isEmpty()) {
+    auto qa = new QAction("Open in default application", menu);
+    menu->addAction(qa);
+    connect(qa,&QAction::triggered,[=](){QDesktopServices::openUrl(QUrl(link_url));});
   }
   if (!selectedText().isEmpty()) {
     auto url = "https://www.google.co.jp/search?q="+QString(QUrl::toPercentEncoding(selectedText()));
@@ -98,6 +114,5 @@ void MyWebView::handleMouseGesture(const QString& g)
 }
 void MyWebView::load(const QString& url)
 {
-  qDebug() << url;
   load(QUrl(url));
 }
