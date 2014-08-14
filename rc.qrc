@@ -20,5 +20,9 @@
          <file>img/zoom_in.png</file>
          <file>img/zoom_out.png</file>
          <file>img/zoom_reset.png</file>
+         <file>img/magnifier.png</file>
+         <file>img/mypage.png</file>
+         <file>img/txdetail.png</file>
+         <file>img/favorites.png</file>
      </qresource>
  </RCC>

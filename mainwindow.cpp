@@ -370,8 +370,22 @@ void MainWindow::setToolBar()
   stop.addPixmap(QPixmap(":/img/stop_disabled.png"),QIcon::Disabled);
   view->pageAction(QWebPage::Stop)->setIcon(stop);
   toolBar->addAction(view->pageAction(QWebPage::Stop));
-  auto qa = new QAction(QIcon(":img/home.png"),"home",this);
+  toolBar = addToolBar(tr("Ask Mona Buttons"));
+  toolBar->setObjectName("Ask Mona Buttons");
+  auto qa = new QAction(QIcon(":img/home.png"),"Home",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(ask_url_base);});
+  toolBar->addAction(qa);
+  qa = new QAction(QIcon(":img/magnifier.png"),"Search Topics",this);
+  connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/topiclist"));});
+  toolBar->addAction(qa);
+  qa = new QAction(QIcon(":img/mypage.png"),"My Page",this);
+  connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/mypage"));});
+  toolBar->addAction(qa);
+  qa = new QAction(QIcon(":img/txdetail.png"),"TX Detail",this);
+  connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/txdetail"));});
+  toolBar->addAction(qa);
+  qa = new QAction(QIcon(":img/favorites.png"),"Favorites",this);
+  connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/favorites"));});
   toolBar->addAction(qa);
 
   auto zoomBar = addToolBar(tr("Zoom Buttons"));
