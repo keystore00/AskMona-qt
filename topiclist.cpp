@@ -77,8 +77,8 @@ void TopicList::setWidgets()
 {
   auto layout = new QVBoxLayout();
   auto hlayout = new QHBoxLayout();
-  QIcon reload(":/img/reload.png");
-  reload.addPixmap(QPixmap(":/img/reload_disabled.png"),QIcon::Disabled);
+  QIcon reload(getValidFileName("img/reload.png"));
+  reload.addPixmap(QPixmap(getValidFileName("img/reload_disabled.png")),QIcon::Disabled);
   reload_button = new QPushButton(reload,"",this);
   reload_button->setToolTip("Update topic information for last N topics.");
   connect(reload_button,&QPushButton::clicked,this,&TopicList::update);

@@ -16,12 +16,20 @@ QString getDataDir()
     return datadir;
   }
 }
-QString loadEmbeddedOrFile(const QString& filename)
+QString getValidFileName(const QString& filename)
 {
   QFile file(getDataDir()+"/"+filename);
   if (!file.exists()) {
-    file.setFileName(":/"+filename);
+    return ":/"+filename;
   } else {
+    return file.fileName();
+  }
+}
+QByteArray loadEmbeddedOrFile(const QString& filename)
+{
+  auto valid_name = getValidFileName(filename);
+  QFile file(valid_name);
+  if (!valid_name.startsWith(":")) {
     qDebug() << "The file is loaded from" << file.fileName();
   }
   file.open(QIODevice::ReadOnly | QIODevice::Text);

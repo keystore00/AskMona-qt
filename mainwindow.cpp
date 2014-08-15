@@ -35,9 +35,8 @@ namespace {
 }
 MainWindow::MainWindow()
 {
-  setWindowIcon(QIcon(":/img/icon.png"));
+  setWindowIcon(QIcon(getValidFileName("img/icon.png")));
   {
-
     QDir dat_dir(QCoreApplication::applicationDirPath()+"/dat");
     if (!dat_dir.exists()) {
       if (dat_dir.mkpath(".")) {
@@ -354,37 +353,37 @@ void MainWindow::setToolBar()
 {
   QToolBar *toolBar = addToolBar(tr("Navigation Buttons"));
   toolBar->setObjectName("Navigation Buttons");
-  QIcon backward(":/img/backward.png");
-  backward.addPixmap(QPixmap(":/img/backward_disabled.png"),QIcon::Disabled);
+  QIcon backward(getValidFileName("img/backward.png"));
+  backward.addPixmap(QPixmap(getValidFileName("img/backward_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Back)->setIcon(backward);
   toolBar->addAction(view->pageAction(QWebPage::Back));
-  QIcon forward(":/img/forward.png");
-  forward.addPixmap(QPixmap(":/img/forward_disabled.png"),QIcon::Disabled);
+  QIcon forward(getValidFileName("img/forward.png"));
+  forward.addPixmap(QPixmap(getValidFileName("img/forward_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Forward)->setIcon(forward);
   toolBar->addAction(view->pageAction(QWebPage::Forward));
-  QIcon reload(":/img/reload.png");
-  reload.addPixmap(QPixmap(":/img/reload_disabled.png"),QIcon::Disabled);
+  QIcon reload(getValidFileName("img/reload.png"));
+  reload.addPixmap(QPixmap(getValidFileName("img/reload_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Reload)->setIcon(reload);
   toolBar->addAction(view->pageAction(QWebPage::Reload));
-  QIcon stop(":/img/stop.png");
-  stop.addPixmap(QPixmap(":/img/stop_disabled.png"),QIcon::Disabled);
+  QIcon stop(getValidFileName("img/stop.png"));
+  stop.addPixmap(QPixmap(getValidFileName("img/stop_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Stop)->setIcon(stop);
   toolBar->addAction(view->pageAction(QWebPage::Stop));
   toolBar = addToolBar(tr("Ask Mona Buttons"));
   toolBar->setObjectName("Ask Mona Buttons");
-  auto qa = new QAction(QIcon(":img/home.png"),"Home",this);
+  auto qa = new QAction(QIcon(getValidFileName("img/home.png")),"Home",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(ask_url_base);});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(":img/magnifier.png"),"Search Topics",this);
+  qa = new QAction(QIcon(getValidFileName("img/magnifier.png")),"Search Topics",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/topiclist"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(":img/mypage.png"),"My Page",this);
+  qa = new QAction(QIcon(getValidFileName("img/mypage.png")),"My Page",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/mypage"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(":img/txdetail.png"),"TX Detail",this);
+  qa = new QAction(QIcon(getValidFileName("img/txdetail.png")),"TX Detail",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/txdetail"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(":img/favorites.png"),"Favorites",this);
+  qa = new QAction(QIcon(getValidFileName("img/favorites.png")),"Favorites",this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/favorites"));});
   toolBar->addAction(qa);
 
@@ -394,17 +393,17 @@ void MainWindow::setToolBar()
   label->setReadOnly(true);
   connect(view,&MyWebView::zoomFactorChanged,[this,label](qreal factor){label->setText(QString::number(factor*100)+"%");});
   qa = new QAction("Zoom In",this);
-  QIcon zoom_in(":/img/zoom_in.png");
+  QIcon zoom_in(getValidFileName("img/zoom_in.png"));
   qa->setIcon(zoom_in);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()+0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
   zoomBar->addAction(qa);
   qa = new QAction("Zoom Out",this);
-  QIcon zoom_out(":/img/zoom_out.png");
+  QIcon zoom_out(getValidFileName("img/zoom_out.png"));
   qa->setIcon(zoom_out);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()-0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
   zoomBar->addAction(qa);
   qa = new QAction("Reset",this);
-  QIcon zoom_reset(":/img/zoom_reset.png");
+  QIcon zoom_reset(getValidFileName("img/zoom_reset.png"));
   qa->setIcon(zoom_reset);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(1.0);label->setText(QString::number(view->zoomFactor()*100)+"%");});
   zoomBar->addAction(qa);
