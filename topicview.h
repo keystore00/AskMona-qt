@@ -3,6 +3,7 @@
 
 #include <QWebView>
 #include <QWebFrame>
+#include "units.h"
 namespace {
   inline double fromSatoshi(unsigned long long val) {
     return val / 100000000.0;
@@ -46,7 +47,7 @@ void TopicView::set(const TopicPairList& topics)
   //%13 mona received
   //%14 mona class [updated,noupdate]
   //%15 mona increased from last visit
-  //%16 favorites 
+  //%16 favorites
   QString body;
   for (const auto &t : topics) {
     auto &last = t.second->first;
@@ -54,10 +55,10 @@ void TopicView::set(const TopicPairList& topics)
     auto t_id = QString::number(last->t_id);
     auto dr = current->count - last->count;
     QString res_class = dr?"updated":"noupdate";
-    auto dm = fromSatoshi(current->receive - last->receive);
+    auto dm = current->receive - last->receive;
     QString mona_class = dm?"updated":"noupdate";
     auto tmp = topic_view_item.arg(t_id, last->title, QString::number(last->cat_id), last->category, last->tags, last->lead,QString::number(last->created), QString::number(last->updated), QString::number(last->modified));
-    body += tmp.arg(QString::number(last->count), res_class, QString::number(dr), QString::number(fromSatoshi(last->receive)), mona_class, QString::number(dm), QString::number(last->favorites));
+    body += tmp.arg(QString::number(last->count), res_class, QString::number(dr), QString::number(fromSatoshi(last->receive)), mona_class, toHumanReadable(dm), QString::number(last->favorites));
   }
   auto tmp = topic_view_html.arg(topic_view_style, body);
   page()->mainFrame()->setHtml(tmp);

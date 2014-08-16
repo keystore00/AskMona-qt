@@ -84,6 +84,7 @@ void TopicList::setWidgets()
   connect(reload_button,&QPushButton::clicked,this,&TopicList::update);
   hlayout->addWidget(reload_button);
   cbox = new QComboBox(this);
+  cbox->setToolTip("Topic Order");
   cbox->addItem("Default");
   cbox->setItemData(0, "Default order in Ask Mona.", Qt::ToolTipRole);
   cbox->addItem("Res.");
