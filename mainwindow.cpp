@@ -88,6 +88,29 @@ void MainWindow::adjustLocation()
 
 void MainWindow::changeLocation()
 {
+  if (locationEdit->text() == "about:") {
+    QString msg =
+      "<h3>About AskMona-qt</h3>"
+      "<p>This program is an browser specifically created for <a href=\"http://askmona.org\">Ask Mona</a>.</p>"
+      "<p>Version "+QCoreApplication::applicationVersion()+"</p>"
+      "<p>Built on " __DATE__ " at " __TIME__ "</p>"
+      "<p><a href=\"https://github.com/keystore00/AskMona-qt\">Source Code</a></p>"
+      "<p>Copyright (C) 2014 keystore00.</p>"
+      "<p>This software is released under the MIT License.</p>";
+    auto msgBox = new QMessageBox(this);
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setWindowTitle("About AskMona-qt");
+    msgBox->setInformativeText(msg);
+    QPixmap pm(getValidFileName("img/icon.png"));
+    if (!pm.isNull())
+      msgBox->setIconPixmap(pm.scaledToWidth(64,Qt::SmoothTransformation));
+    msgBox->show();
+    return;
+  }
+  if (locationEdit->text() == "about:qt") {
+    QMessageBox::aboutQt(this);
+    return;
+  }
   QUrl url = QUrl(locationEdit->text());
   view->load(url);
   view->setFocus();
