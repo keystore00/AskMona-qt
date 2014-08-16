@@ -35,7 +35,7 @@ public slots:
 private:
   TopicView *text_area;
   QNetworkAccessManager *nam;
-  QComboBox *cbox;
+  QComboBox *cbox,*cat_box;
   QSpinBox *num_update_box;
   QPushButton *reload_button;
   TopicPairListType topics;

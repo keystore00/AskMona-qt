@@ -6,7 +6,6 @@
 #include <memory>
 class TopicObject;
 typedef std::shared_ptr<const TopicObject> TopicObjectPtr;
-
 class TopicObject
 {
 public:
@@ -17,6 +16,8 @@ public:
   unsigned long long  created,updated,modified;
   QString title,category,lead,tags;
   QJsonObject obj;
+  int category_flag;
+  static int cat_id2flag(int cat_id);
 private:
   TopicObject(const QJsonObject& json);
   TopicObject() = delete;

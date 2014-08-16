@@ -15,6 +15,7 @@
 #include <QSpinBox>
 #include <QApplication>
 #include <QTimer>
+#include <QStringListModel>
 #include <queue>
 #include <ctime>
 #include "constants.h"
@@ -22,11 +23,12 @@
 #include "util.h"
 
 namespace {
-  enum sort_key {k_modified,k_res,k_MONA};
+  enum sort_key {k_modified,k_updated,k_res,k_MONA};
   time_t last_reload;
-  std::map<QString,enum sort_key> sort_key_map = {{"Default",k_modified},{"Res.",k_res},{"MONA",k_MONA}};
+  std::map<QString,enum sort_key> sort_key_map = {{"Default",k_updated},{"Res.",k_res},{"MONA",k_MONA},{"Modified",k_modified}};
   QString fname = "/dat/topic_list.json";
   static const int n_timeout = 1;
+  const QStringList category_list = {"その他","バラマキ","初心者","ニュース","議論・討論","趣味・生活","創作・文化","ネタ・雑談","経済・社会","科学・IT","採掘","R18","All"};
 }
 TopicList::TopicList(QWidget *parent) :
   QWidget(parent)
@@ -91,8 +93,16 @@ void TopicList::setWidgets()
   cbox->setItemData(1, "Descending order by response count.", Qt::ToolTipRole);
   cbox->addItem("MONA");
   cbox->setItemData(2, "Descending order by MONA received.", Qt::ToolTipRole);
+  cbox->addItem("Modified");
+  cbox->setItemData(3, "Descending order by modified datetime.", Qt::ToolTipRole);
   connect(cbox,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxChanged(int)));
   hlayout->addWidget(cbox);
+  cat_box = new QComboBox(this);
+  cat_box->setToolTip("Filter Category");
+  cat_box->setModel(new QStringListModel(category_list));
+  cat_box->setCurrentIndex(category_list.size()-1);
+  connect(cat_box,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxChanged(int)));
+  hlayout->addWidget(cat_box);
   num_update_box = new QSpinBox(this);
   num_update_box->setMinimum(50);
   num_update_box->setMaximum(200);
@@ -125,11 +135,17 @@ void TopicList::update_view()
   auto key = sort_key_map[cbox->currentText()];
   typedef unsigned long long KeyValueType;
   std::multimap <KeyValueType,TopicPair*> ordered;
+  int cat_flag = cat_box->currentIndex() < category_list.size()-1 ? TopicObject::cat_id2flag(cat_box->currentIndex()) : -1;
   for (auto it = topics.begin(); it != topics.end(); ++it) {
-    auto &last = it->second.first;
-    auto &current = it->second.second;
+    auto last = it->second.first;
+    auto current = it->second.second;
+    if (!(last->category_flag & cat_flag)) {
+      continue;
+    }
     KeyValueType key_value = 0;
     switch (key) {
+    case k_updated:
+      key_value = current->updated;
     case k_modified:
       key_value = current->modified;
       break;

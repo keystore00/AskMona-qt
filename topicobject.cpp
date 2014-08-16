@@ -8,6 +8,7 @@ TopicObject::TopicObject(const QJsonObject& json)
   rank = json["rank"].toInt();
   t_id = json["t_id"].toInt();
   cat_id = json["cat_id"].toInt();
+  category_flag = cat_id2flag(cat_id);
   created = json["created"].toVariant().toULongLong();
   updated = json["updated"].toVariant().toULongLong();
   modified = json["modified"].toVariant().toULongLong();
@@ -18,4 +19,9 @@ TopicObject::TopicObject(const QJsonObject& json)
 TopicObjectPtr TopicObject::New(const QJsonObject& json)
 {
   return TopicObjectPtr(new TopicObject(json));
+}
+
+int TopicObject::cat_id2flag(int cat_id)
+{
+  return 1 << cat_id;
 }
