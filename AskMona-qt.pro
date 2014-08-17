@@ -34,3 +34,4 @@ HEADERS  += mainwindow.h \
 
 CONFIG += c++11 static
 RC_FILE = icon.rc
+TRANSLATIONS = locale/AskMona-qt_ja.ts

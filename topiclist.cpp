@@ -16,6 +16,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QStringListModel>
+#include <QListView>
 #include <queue>
 #include <ctime>
 #include "constants.h"
@@ -28,11 +29,12 @@ namespace {
   std::map<QString,enum sort_key> sort_key_map = {{"Default",k_updated},{"Res.",k_res},{"MONA",k_MONA},{"Modified",k_modified}};
   QString fname = "/dat/topic_list.json";
   static const int n_timeout = 1;
-  const QStringList category_list = {"その他","バラマキ","初心者","ニュース","議論・討論","趣味・生活","創作・文化","ネタ・雑談","経済・社会","科学・IT","採掘","R18","All"};
 }
 TopicList::TopicList(QWidget *parent) :
   QWidget(parent)
 {
+  category_list_str= tr("Misc.,GiveAway,Beginer,News,Discussion,Hobby,Culture,Chat,Economy,Science,Mining,R18,All");
+  category_list = category_list_str.split(",");
   setWidgets();
   nam = new QNetworkAccessManager(this);
   QObject::connect(nam, SIGNAL(finished(QNetworkReply*)),this, SLOT(finishedSlot(QNetworkReply*)));
@@ -82,23 +84,25 @@ void TopicList::setWidgets()
   QIcon reload(getValidFileName("img/reload.png"));
   reload.addPixmap(QPixmap(getValidFileName("img/reload_disabled.png")),QIcon::Disabled);
   reload_button = new QPushButton(reload,"",this);
-  reload_button->setToolTip("Update topic information for last N topics.");
+  reload_button->setToolTip(tr("Update topic information for last N topics."));
   connect(reload_button,&QPushButton::clicked,this,&TopicList::update);
   hlayout->addWidget(reload_button);
   cbox = new QComboBox(this);
-  cbox->setToolTip("Topic Order");
-  cbox->addItem("Default");
-  cbox->setItemData(0, "Default order in Ask Mona.", Qt::ToolTipRole);
-  cbox->addItem("Res.");
-  cbox->setItemData(1, "Descending order by response count.", Qt::ToolTipRole);
-  cbox->addItem("MONA");
-  cbox->setItemData(2, "Descending order by MONA received.", Qt::ToolTipRole);
-  cbox->addItem("Modified");
-  cbox->setItemData(3, "Descending order by modified datetime.", Qt::ToolTipRole);
+  cbox->setView(new QListView(cbox));
+  cbox->setToolTip(tr("Topic Order"));
+  cbox->addItem(tr("Default"));
+  cbox->setItemData(0, tr("Default order in Ask Mona."), Qt::ToolTipRole);
+  cbox->addItem(tr("Res."));
+  cbox->setItemData(1, tr("Descending order by response count."), Qt::ToolTipRole);
+  cbox->addItem(tr("MONA"));
+  cbox->setItemData(2, tr("Descending order by MONA received."), Qt::ToolTipRole);
+  cbox->addItem(tr("Modified"));
+  cbox->setItemData(3, tr("Descending order by modified datetime."), Qt::ToolTipRole);
   connect(cbox,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxChanged(int)));
   hlayout->addWidget(cbox);
   cat_box = new QComboBox(this);
-  cat_box->setToolTip("Filter Category");
+  cat_box->setView(new QListView(cat_box));
+  cat_box->setToolTip(tr("Filter Category"));
   cat_box->setModel(new QStringListModel(category_list));
   cat_box->setCurrentIndex(category_list.size()-1);
   connect(cat_box,SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxChanged(int)));
@@ -109,7 +113,7 @@ void TopicList::setWidgets()
   num_update_box->setAlignment(Qt::AlignRight);
   num_update_box->setSingleStep(50);
   num_update_box->setValue(50);
-  num_update_box->setToolTip("# of topics to be updated.");
+  num_update_box->setToolTip(tr("# of topics to be updated."));
   hlayout->addWidget(num_update_box);
   layout->addLayout(hlayout);
   text_area = new TopicView(this);
@@ -118,7 +122,7 @@ void TopicList::setWidgets()
   text_area->page()->mainFrame()->setHtml("Loading...");
   connect(text_area,SIGNAL(linkClicked(QUrl)),this,SLOT(linkClicked(QUrl)));
   layout->addWidget(text_area);
-  auto pb = new QPushButton("Mark all as read",this);
+  auto pb = new QPushButton(tr("Mark all as read"),this);
   connect(pb,SIGNAL(clicked()),this,SLOT(mark_all_as_read()));
   layout->addWidget(pb);
   setLayout(layout);

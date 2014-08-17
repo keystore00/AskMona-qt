@@ -25,4 +25,7 @@
          <file>img/txdetail.png</file>
          <file>img/favorites.png</file>
      </qresource>
+     <qresource prefix="/translations">
+         <file alias="ja">locale/AskMona-qt_ja.qm</file>
+     </qresource>
  </RCC>

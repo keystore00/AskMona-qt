@@ -42,6 +42,8 @@ private:
   void setWidgets();
   void loadTopics(const QString& filename);
   void saveTopics(const QString& filename);
+  QString category_list_str;
+  QStringList category_list;
 private slots:
   void finishedSlot(QNetworkReply*);
   void comboBoxChanged(int);

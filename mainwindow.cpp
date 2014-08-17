@@ -90,7 +90,6 @@ void MainWindow::changeLocation()
 {
   if (locationEdit->text() == "about:") {
     QString msg =
-      "<h3>About AskMona-qt</h3>"
       "<p>This program is an browser specifically created for <a href=\"http://askmona.org\">Ask Mona</a>.</p>"
       "<p>Version "+QCoreApplication::applicationVersion()+"</p>"
       "<p>Built on " __DATE__ " at " __TIME__ "</p>"
@@ -99,8 +98,10 @@ void MainWindow::changeLocation()
       "<p>This software is released under the MIT License.</p>";
     auto msgBox = new QMessageBox(this);
     msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setObjectName("aboutDialog");
     msgBox->setWindowTitle("About AskMona-qt");
     msgBox->setInformativeText(msg);
+    msgBox->setText("<h3>About AskMona-qt</h3>");
     QPixmap pm(getValidFileName("img/icon.png"));
     if (!pm.isNull())
       msgBox->setIconPixmap(pm.scaledToWidth(64,Qt::SmoothTransformation));
@@ -338,8 +339,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* e)
 void MainWindow::setDock()
 {
   auto dock = new QDockWidget(tr("Topic List"), this);
-  dock->setObjectName("Topic List Dock");
+  dock->setObjectName("TopicListDock");
   topic_list = new TopicList(this);
+  topic_list->setObjectName("topicList");
   connect(topic_list,SIGNAL(topicClicked(QString)),this,SLOT(openTopic(QString)));
   connect(this,SIGNAL(mouseGestured(QString)),topic_list,SLOT(handleMouseGesture(QString)));
   dock->setWidget(topic_list);
@@ -379,53 +381,58 @@ void MainWindow::setToolBar()
   QIcon backward(getValidFileName("img/backward.png"));
   backward.addPixmap(QPixmap(getValidFileName("img/backward_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Back)->setIcon(backward);
+  view->pageAction(QWebPage::Back)->setToolTip(tr("Go Back"));
   toolBar->addAction(view->pageAction(QWebPage::Back));
   QIcon forward(getValidFileName("img/forward.png"));
   forward.addPixmap(QPixmap(getValidFileName("img/forward_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Forward)->setIcon(forward);
+  view->pageAction(QWebPage::Forward)->setToolTip(tr("Go Forward"));
   toolBar->addAction(view->pageAction(QWebPage::Forward));
   QIcon reload(getValidFileName("img/reload.png"));
   reload.addPixmap(QPixmap(getValidFileName("img/reload_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Reload)->setIcon(reload);
+  view->pageAction(QWebPage::Reload)->setToolTip(tr("Reload"));
   toolBar->addAction(view->pageAction(QWebPage::Reload));
   QIcon stop(getValidFileName("img/stop.png"));
   stop.addPixmap(QPixmap(getValidFileName("img/stop_disabled.png")),QIcon::Disabled);
   view->pageAction(QWebPage::Stop)->setIcon(stop);
+  view->pageAction(QWebPage::Stop)->setToolTip(tr("Stop"));
   toolBar->addAction(view->pageAction(QWebPage::Stop));
   toolBar = addToolBar(tr("Ask Mona Buttons"));
   toolBar->setObjectName("Ask Mona Buttons");
-  auto qa = new QAction(QIcon(getValidFileName("img/home.png")),"Home",this);
+  auto qa = new QAction(QIcon(getValidFileName("img/home.png")),tr("Home"),this);
   connect(qa,&QAction::triggered,[this](){linkClicked(ask_url_base);});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(getValidFileName("img/magnifier.png")),"Search Topics",this);
+  qa = new QAction(QIcon(getValidFileName("img/magnifier.png")),tr("Search Topics"),this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/topiclist"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(getValidFileName("img/mypage.png")),"My Page",this);
+  qa = new QAction(QIcon(getValidFileName("img/mypage.png")),tr("My Page"),this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/mypage"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(getValidFileName("img/txdetail.png")),"TX Detail",this);
+  qa = new QAction(QIcon(getValidFileName("img/txdetail.png")),tr("TX Detail"),this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/txdetail"));});
   toolBar->addAction(qa);
-  qa = new QAction(QIcon(getValidFileName("img/favorites.png")),"Favorites",this);
+  qa = new QAction(QIcon(getValidFileName("img/favorites.png")),tr("Favorites"),this);
   connect(qa,&QAction::triggered,[this](){linkClicked(QUrl("http://askmona.org/favorites"));});
   toolBar->addAction(qa);
 
   auto zoomBar = addToolBar(tr("Zoom Buttons"));
   zoomBar->setObjectName("Zoom Buttons");
   auto label = new QLineEdit("100%",zoomBar);
+  label->setToolTip(tr("Scale Factor"));
   label->setReadOnly(true);
   connect(view,&MyWebView::zoomFactorChanged,[this,label](qreal factor){label->setText(QString::number(factor*100)+"%");});
-  qa = new QAction("Zoom In",this);
+  qa = new QAction(tr("Zoom In"),this);
   QIcon zoom_in(getValidFileName("img/zoom_in.png"));
   qa->setIcon(zoom_in);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()+0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
   zoomBar->addAction(qa);
-  qa = new QAction("Zoom Out",this);
+  qa = new QAction(tr("Zoom Out"),this);
   QIcon zoom_out(getValidFileName("img/zoom_out.png"));
   qa->setIcon(zoom_out);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(view->zoomFactor()-0.1);label->setText(QString::number(view->zoomFactor()*100)+"%");});
   zoomBar->addAction(qa);
-  qa = new QAction("Reset",this);
+  qa = new QAction(tr("Reset"),this);
   QIcon zoom_reset(getValidFileName("img/zoom_reset.png"));
   qa->setIcon(zoom_reset);
   connect(qa,&QAction::triggered,[this,label](){view->setZoomFactor(1.0);label->setText(QString::number(view->zoomFactor()*100)+"%");});
