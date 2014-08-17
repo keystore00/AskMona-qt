@@ -33,7 +33,7 @@ namespace {
 TopicList::TopicList(QWidget *parent) :
   QWidget(parent)
 {
-  category_list_str= tr("Misc.,GiveAway,Beginer,News,Discussion,Hobby,Culture,Chat,Economy,Science,Mining,R18,All");
+  category_list_str= tr("Misc.,GiveAway,Beginner,News,Discussion,Hobby,Culture,Chat,Economy,Science,Mining,R18,All");
   category_list = category_list_str.split(",");
   setWidgets();
   nam = new QNetworkAccessManager(this);
