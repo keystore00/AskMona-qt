@@ -29,6 +29,46 @@ QMainWindow::separator {
 }
 QToolTip,QMenu {
     color: black;
-    background-color: beige;
+    background-color: #ebebeb;
     border: 2px solid gray;
+    padding: -2px -2px 0px 0px;
+}
+QMenu::item {
+    padding: 1px 25px 2px 20px;
+    border-top: 2px;
+    border-bottom: 2px;
+    border-style: solid;
+    border-color: transparent;
+}
+QMenu::item:selected {
+    border-color: gray;
+    background: beige;
+}
+
+QListView {
+    show-decoration-selected: 1;
+    padding: -2px -2px -4px -2px;
+    outline: none;
+}
+QListView::item {
+    padding: 2px;
+    border: 2px solid transparent;
+}
+QListView::item:selected {
+    border-color: gray;
+    background-color: beige;
+}
+QComboBox QAbstractItemView {
+    border: 2px solid gray;
+    background-color: #ebebeb;
+    selection-background-color: beige;
+    selection-color: black;
+}
+QDockWidget {
+    color: white;
+    font-weight: bold;
+}
+QDockWidget::title {
+    text-align: center;
+    background-color:#22b14c;
 }
