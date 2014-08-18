@@ -261,3 +261,10 @@ void TopicList::mark_all_as_read()
   }
   update_view();
 }
+void TopicList::paintEvent(QPaintEvent *)
+{
+  QStyleOption opt;
+  opt.init(this);
+  QPainter p(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}

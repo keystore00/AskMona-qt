@@ -47,6 +47,7 @@ private:
 private slots:
   void finishedSlot(QNetworkReply*);
   void comboBoxChanged(int);
+  void paintEvent(QPaintEvent *) override;
 };
 
 #endif // TOPICLIST_H

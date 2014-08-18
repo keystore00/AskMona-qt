@@ -1,16 +1,9 @@
-QWidget {
-    background-color: #86ce86;
-}
 QToolBar, QStatusBar {
-    border-width: 2px;
-    border-color: gray;
-    border-style: solid;
+    border: 2px solid gray;
 }
-QPushButton, QComboBox, QSpinBox, QLineEdit {
-    border-width: 2px;
-    border-color: gray;
+QPushButton, QComboBox, QSpinBox, QLineEdit, QListView {
+    border: 2px solid gray;
     background: #ebebeb;
-    border-style: solid;
     padding: 1px;
 }
 QPushButton:hover, QComboBox:hover, QSpinBox:hover, QLineEdit:hover {
@@ -40,9 +33,10 @@ QMenu::item {
     border-style: solid;
     border-color: transparent;
 }
-QMenu::item:selected {
+QMenu::item:selected,QListView::item:selected {
     border-color: gray;
     background: beige;
+    color:black;
 }
 
 QListView {
@@ -54,16 +48,6 @@ QListView::item {
     padding: 2px;
     border: 2px solid transparent;
 }
-QListView::item:selected {
-    border-color: gray;
-    background-color: beige;
-}
-QComboBox QAbstractItemView {
-    border: 2px solid gray;
-    background-color: #ebebeb;
-    selection-background-color: beige;
-    selection-color: black;
-}
 QDockWidget {
     color: white;
     font-weight: bold;
@@ -71,4 +55,7 @@ QDockWidget {
 QDockWidget::title {
     text-align: center;
     background-color:#22b14c;
+}
+TopicList {
+    background-color: #86ce86;
 }
