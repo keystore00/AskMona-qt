@@ -19,4 +19,4 @@ private:
   void purgeOldCookies();
 };
 
-#endif // COOKIEJAR_H
+#endif  // COOKIEJAR_H

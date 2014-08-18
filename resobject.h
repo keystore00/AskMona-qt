@@ -12,11 +12,11 @@ public:
   static ResObjectPtr New(const QJsonObject& json);
   ~ResObject() = default;
   int r_id, u_id, res_lv, res_count;
-  unsigned long long created;
+  qint64 created;
   QString u_dan, u_times, receive, response;
   QJsonObject obj;
 private:
-  ResObject(const QJsonObject& json);
+  explicit ResObject(const QJsonObject& json);
   ResObject() = delete;
   ResObject(const ResObject &) = delete;
   ResObject(ResObject &&) = delete;
@@ -24,4 +24,4 @@ private:
   ResObject &operator=(ResObject&&) = delete;
 };
 
-#endif // RESOBJECT_H
+#endif  // RESOBJECT_H

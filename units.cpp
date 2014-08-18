@@ -1,7 +1,7 @@
 #include "units.h"
 namespace
 {
-  enum Unit {mega,kilo,none,milli,micro,satoshi};
+  enum Unit {mega, kilo, none, milli, micro, satoshi};
   QString name(Unit unit)
   {
     switch (unit) {
@@ -29,8 +29,8 @@ namespace
   }
   Unit decimals2unit(int decimals)
   {
-    auto d = div(decimals,3);
-    auto quotinent = d.quot + (d.rem<0?-1:0);
+    auto d = div(decimals, 3);
+    auto quotinent = d.quot + (d.rem < 0 ? -1 : 0);
     switch (quotinent) {
     case 2: return mega;
     case 1: return kilo;
@@ -50,8 +50,7 @@ namespace
     }
     return n_decimals;
   }
-
-}
+}  // namespace
 QString toHumanReadable(qint64 satoshi)
 {
   if (satoshi == 0) {

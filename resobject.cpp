@@ -2,7 +2,11 @@
 #include <QVariant>
 
 ResObject::ResObject(const QJsonObject& json)
-  : u_dan(json["u_dan"].toString()), u_times(json["u_times"].toString()), receive(json["receive"].toString()), response(json["response"].toString()), obj(json)
+  : u_dan(json["u_dan"].toString()),
+    u_times(json["u_times"].toString()),
+    receive(json["receive"].toString()),
+    response(json["response"].toString()),
+    obj(json)
 {
   r_id = json["r_id"].toInt();
   u_id = json["u_id"].toInt();

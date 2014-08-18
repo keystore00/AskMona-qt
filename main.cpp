@@ -2,7 +2,8 @@
 #include <QApplication>
 #include <iostream>
 #include "util.h"
-using namespace std;
+using std::cout;
+using std::endl;
 
 void parseCommandLine()
 {
@@ -10,9 +11,9 @@ void parseCommandLine()
   parser.setApplicationDescription("An Ask Mona browser.");
   const auto helpOption = parser.addHelpOption();
   const auto versionOption = parser.addVersionOption();
-  QCommandLineOption dataDirectoryOption(QStringList() << "d" << "datadir","All data are saved into <directory>. Default is application directory.","directory");
+  QCommandLineOption dataDirectoryOption(QStringList() << "d" << "datadir", "All data are saved into <directory>. Default is application directory.", "directory");
   parser.addOption(dataDirectoryOption);
-  QCommandLineOption langOption(QStringList() << "l" << "lang","Set application language.","language");
+  QCommandLineOption langOption(QStringList() << "l" << "lang", "Set application language.", "language");
   parser.addOption(langOption);
 
   if (!parser.parse(QCoreApplication::arguments())) {

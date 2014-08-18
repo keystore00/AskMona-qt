@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 public:
   MainWindow();
   ~MainWindow();
-		       
+
 protected slots:
 
   void adjustLocation();
@@ -41,10 +41,10 @@ protected:
   void saveSettings();
 
 private:
-  QString popupjs,bookmark;
+  QString popupjs, bookmark;
   QStringList ng_topics;
   MyWebView *view;
-  QLineEdit *locationEdit,*findEdit;
+  QLineEdit *locationEdit, *findEdit;
   int progress;
   TopicList *topic_list;
   void setDock();
@@ -57,4 +57,4 @@ signals:
   void mouseGestured(const QString&);
   void mouseGestureUpdated(const QString&);
 };
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

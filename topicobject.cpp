@@ -3,7 +3,11 @@
 #include <QVariant>
 
 TopicObject::TopicObject(const QJsonObject& json)
-  : title(json["title"].toString()), category(json["category"].toString()), lead(json["lead"].toString()), tags(json["tags"].toString()), obj(json)
+  : title(json["title"].toString()),
+    category(json["category"].toString()),
+    lead(json["lead"].toString()),
+    tags(json["tags"].toString()),
+    obj(json)
 {
   rank = json["rank"].toInt();
   t_id = json["t_id"].toInt();

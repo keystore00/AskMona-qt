@@ -43,7 +43,7 @@ void CookieJar::saveCookies(const QString& filename)
     return;
   }
   auto cookies = allCookies();
-  for (const auto &c:cookies) {
+  for (const auto &c : cookies) {
     cookieFile.write(c.toRawForm());
     cookieFile.write("\n");
   }

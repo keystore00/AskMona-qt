@@ -12,7 +12,6 @@ public:
 signals:
 
 public slots:
-
 };
 
-#endif // MYWEBPAGE_H
+#endif  // MYWEBPAGE_H

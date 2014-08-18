@@ -13,7 +13,7 @@ protected:
   void mousePressEvent(QMouseEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
   void mouseReleaseEvent(QMouseEvent* e) override;
-  void wheelEvent (QWheelEvent *e) override;
+  void wheelEvent(QWheelEvent* e) override;
 signals:
   void addNG(const QString& t_id);
   void zoomFactorChanged(qreal);
@@ -29,4 +29,4 @@ private:
   QTimeLine* timeLine;
 };
 
-#endif // MYWEBVIEW_H
+#endif  // MYWEBVIEW_H

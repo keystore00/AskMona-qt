@@ -18,8 +18,8 @@ class TopicList : public QWidget
 public:
   explicit TopicList(QWidget *parent = 0);
   ~TopicList();
-  typedef std::pair<TopicObjectPtr,TopicObjectPtr> TopicPair;
-  typedef std::map<int,TopicPair> TopicPairListType;
+  typedef std::pair<TopicObjectPtr, TopicObjectPtr> TopicPair;
+  typedef std::map<int, TopicPair> TopicPairListType;
 
 signals:
   void topicClicked(const QString& t_id);
@@ -35,7 +35,7 @@ public slots:
 private:
   TopicView *text_area;
   QNetworkAccessManager *nam;
-  QComboBox *cbox,*cat_box;
+  QComboBox *cbox, *cat_box;
   QSpinBox *num_update_box;
   QPushButton *reload_button;
   TopicPairListType topics;
@@ -50,4 +50,4 @@ private slots:
   void paintEvent(QPaintEvent *) override;
 };
 
-#endif // TOPICLIST_H
+#endif  // TOPICLIST_H
