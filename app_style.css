@@ -41,7 +41,7 @@ QMenu::item:selected,QListView::item:selected {
 
 QListView {
     show-decoration-selected: 1;
-    padding: -2px -2px -4px -2px;
+    padding: -2px -2px -2px -2px;
     outline: none;
 }
 QListView::item {
@@ -58,4 +58,30 @@ QDockWidget::title {
 }
 TopicList {
     background-color: #86ce86;
+}
+
+QScrollBar:vertical {
+    background: #86ce86;
+    width: 12px;
+    padding: 15px 0 15px 0;
+}
+QScrollBar::handle:vertical {
+    background: #22b14c;
+}
+QScrollBar::add-line:verticall {
+    border: 2px solid grey;
+    background: #22b14c;
+    height: 12px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-line:verticall {
+    border: 2px solid grey;
+    background: #22b14c;
+    height: 12px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:verticall {
+    background: none;
 }
